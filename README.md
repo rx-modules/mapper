@@ -11,6 +11,14 @@ This script will generate a graph jpeg where each node is a function file and ea
 
 *your setup may require python3 instead of python*
 
+## Examples
+
+Default
+![example](https://raw.githubusercontent.com/RitikShah/mapper/master/example.jpeg)
+
+With Labels
+![example](https://raw.githubusercontent.com/RitikShah/mapper/master/example_labeled.jpeg)
+
 ## Motivation
 
 The purpose of this project was to understand medium to large datapacks and see where the components lie and how the different systems connect. The purpose is to also spot potential optimizations in rather large datapacks by enabling labeling.
@@ -37,8 +45,8 @@ This script comes with minor tweaking options but the main usage is as follows:
 Running: `python mapper.py -h` will pull up a help menu describing the other options
 * `datapack [datapack2 datapack 3 ...]` include datapack(s) for the tool to be used on
 * `-m --mode MODE` will set the mode:
-  ** default is `one` where all the datapacks will output to one graph
-  ** `multiple` is where the datapacks output to their own graphs
+  * * default is `one` where all the datapacks will output to one graph
+  * * `multiple` is where the datapacks output to their own graphs
 * `-l --label` will enabling labeling. This includes what you called each function with on the line connecting nodes
 * `-o --outfile OUTFILE` will allow you to name your own output file. for `multiple` mode, this is ignored
 
