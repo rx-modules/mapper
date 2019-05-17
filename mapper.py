@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 from base64 import b16encode
 from itertools import chain
 from pathlib import Path
@@ -21,10 +22,17 @@ def gen_pastel_color():
     return str(b'#'+b16encode(bytes(triplet)))[1:].replace("'", '').lower().strip()  # noqa
 
 
-def trace(source, lead='line'):
+def trace(source, lead=None):
+    if lead is None:
+        lead = source.__name__
     for item in source:
         print(lead + ': ' + str(item))
         yield item
+
+
+def convert(fname, num=4):
+    parts = Path(fname).parts  # 0:1 - datapack/data, 3 - functions
+    return parts[2] + ':' + '/'.join(re.sub(r'(\.mcfunction)|(\.json)', '', part) for part in parts[num:])  # noqa
 
 
 def gen_open(paths):
@@ -32,11 +40,6 @@ def gen_open(paths):
     for path in paths:
         fcount += 1
         yield path.open()
-
-
-def convert(fname, num=4):
-    parts = Path(fname).parts  # 0:1 - datapack/data, 3 - functions
-    return parts[2] + ':' + '/'.join(re.sub(r'(\.mcfunction)|(\.json)', '', part) for part in parts[num:])  # noqa
 
 
 def gen_lines(files):
@@ -67,7 +70,7 @@ def gen_do(pat, tup):
 
 def gen_tag(paths):
     for path in paths:
-        namespaced = '#' + convert(path)  # path.__repl__() -> str
+        namespaced = '#' + convert(path, 5)  # path.__repl__() -> str
         jfile = json.load(path.open())
         for val in jfile['values']:
             yield (namespaced, (val, ''))
@@ -75,83 +78,128 @@ def gen_tag(paths):
 
 def gen_adv(paths):
     for path in paths:
-        namespaced = str(path)
         jfile = json.load(path.open())
-        print(path, jfile)
-        if 'rewards' in jfile:
-            yield (namespaced, (jfile['rewards']['function'], ''))
+        if 'rewards' in jfile:  # rewards has the function output
+            yield (str(path), (jfile['rewards']['function'], ''))
 
 
-def main():
-    fecount = 0
+def get_paths(dir_name, glob):
+    return Path(f'./{dir_name}/data').rglob(glob)
 
-    exits = ['quit', 'q', 'exit', 'exit()', 'stop', 'leave']
+
+def get_functions(dir_name):
     pat = re.compile(r'^((?!^#.+).)*$')
     patf = re.compile(r'((schedule )?function(?![^{]*})) (#?[a-z0-9.-_+:]+)( \d+.)?')  # noqa
-
-    dir_name = str(input('Datapack name: '))
-    if dir_name.lower().strip() in exits:
-        print('Stopping..')
-        sys.exit()
-    elif not Path(dir_name).exists():
-        print('Directory does not exist..')
-        print('Stopping..')
-        sys.exit()
-
-    start_time = time.time()
-
-    funcfames = Path(f'./{dir_name}/data').rglob('*.mcfunction')
-    funcfiles = gen_open(funcfames)
+    funcnames = get_paths(dir_name, '*/functions/**/*.mcfunction')
+    funcfiles = gen_open(funcnames)
     functuple = gen_lines(funcfiles)
     funclines = gen_grep(patf, functuple)
     funcfuncs = gen_grep(pat, funclines)
-    functions = gen_do(patf, funcfuncs)
+    return gen_do(patf, funcfuncs)
 
-    jsonfames = Path(f'./{dir_name}/data').rglob('*/tags/functions/*.json')
-    functagss = gen_tag(jsonfames)
 
-    advjnames = Path(f'./{dir_name}/data').rglob('*/advancements/**/*.json')
-    advnamess = gen_adv(advjnames)
+def get_tags(dir_name):
+    jsonnames = get_paths(dir_name, '*/tags/functions/*.json')
+    return gen_tag(jsonnames)
 
-    gen_funcs = chain(functions, functagss, advnamess)  # Final stop
 
-    G = pgv.AGraph(splines=True,
-                   overlap=False,
-#                  overlap='scale',  # noqa
-                   strict=False,
-                   directed=True,
-                   bgcolor='#262626')
+def get_adv(dir_name):
+    advjnames = get_paths(dir_name, '*/advancements/**/*.json')
+    return gen_adv(advjnames)
 
-    G.node_attr.update(color='white', fontcolor='#bfbfbf')
 
-    print('Building graph')
-    # test = set()
-    for func in gen_funcs:
+def stream_nodes(datapack):
+    functions = get_functions(datapack)
+    functags = get_tags(datapack)
+    advnames = get_adv(datapack)
+    return chain(functions, functags, advnames)
+
+
+def build_graph(G, gen, label):
+    fecount = 0
+
+    for func in gen:
         fecount += 1
         name, call = func
         G.add_node(name.strip())
-        # test.add(name.strip() + '\n')
         called = call[0]
         if called != '':
-            G.add_edge(name, called.strip(), color=gen_pastel_color())
+            color = gen_pastel_color()
+            if label:
+                G.add_edge(name, called.strip(),
+                           color=color, font_color=color, label=call[1]
+                )
+            else:
+                G.add_edge(name, called.strip(),
+                           color=color
+                )
+    print(f'  Built with: {fcount} functions and {fecount} connections ({G.order()} nodes)!')  # noqa
 
-    '''
-    with open('text.txt', 'w') as file:
-        out = ''
-        for item in test:
-            out += item
-        file.write(out)
-    '''
 
-    print(f'Built with: {fcount} functions and {fecount} connections ({G.order()} nodes)')  # noqa
-    print('Laying graph out')
+def output_graph(dir_name, G):
+    print(f'Constructing the {dir_name} graph. Warning: This might take a while')  # noqa
+    print('  Laying graph out')
     G.layout()
-    print('Writing to .dot file')
-    G.write(f'dots/{dir_name}.dot')
-    print('Drawing to jpeg')
-    G.draw(f'pics/{dir_name}.jpeg', format='jpeg', prog='sfdp')
-    print(f'Done in {round(abs(start_time - time.time()), 3)}s!')
+    print(f'  Writing to {dir_name}.dot')
+    G.write(f'{dir_name}.dot')
+    print(f'  Drawing to {dir_name}.jpeg')
+    G.draw(f'{dir_name}.jpeg', format='jpeg', prog='sfdp')
+
+def main(datapacks, mode='one', label=False):
+    start = time.time()
+    
+    if label:
+        overlap = 'scale'
+    else:
+        overlap = False
+
+    if mode == 'one':
+        G = pgv.AGraph(splines=True,
+                       overlap=overlap,
+                       strict=False,
+                       directed=True,
+                       bgcolor='#262626')
+
+        G.node_attr.update(color='white', fontcolor='#bfbfbf')
+        print('Reading in the datapacks and building the graph')
+        for datapack in datapacks:
+            nodes = stream_nodes(datapack)
+            build_graph(G, nodes, label)
+
+        output_graph(datapack, G)
+    elif mode == 'multiple':
+        for datapack in datapacks:
+            G = pgv.AGraph(splines=True,
+                           overlap=overlap,
+                           strict=False,
+                           directed=True,
+                           bgcolor='#262626')
+
+            G.node_attr.update(color='white', fontcolor='#bfbfbf')
+            print('Reading in the datapack and building the graph')
+            nodes = stream_nodes(datapack)
+            build_graph(G, nodes, label)
+            output_graph(datapack, G)
+    else:
+        print('Invalid Mode')
+
+    
+    print(f'Done in {round(abs(start - time.time()), 3)}s!')
 
 
 if __name__ == '__main__':
-    main()
+    parser = ArgumentParser(description='minecraft datapack mapper using graphviz')  # noqa
+    parser.add_argument('datapack', metavar='d', type=str, nargs='+',
+                        help='a valid datapack to map')
+    parser.add_argument('--mode', type=str, default='one',
+                        help='output all datapacks to [multiple] or [one] graph')  # noqa
+    parser.add_argument('--label', default=False, action='store_true', # noqa
+                        help='enable edge labeling (warning, takes longer and bigger output size)')  # noqa
+    args = parser.parse_args()
+
+    for arg in args.datapack:
+        if not Path(arg).exists():
+            print('Directory does not exist. Stopping..')
+            sys.exit()
+
+    main(args.datapack, args.mode, args.label)
