@@ -1,8 +1,8 @@
-# mapper.py - a python script to graph minecraft datapacks (1.13/1.14)
+## mapper.py - a python script to graph minecraft datapacks (1.13/1.14)
 
 This script will generate a graph jpeg where each node is a function file and each connection is it's call to another function. You can use this script to map out your datapack and figure out what's going on.
 
-# Code Example
+## Code Example
 
 `python mapper.py mydatapack`
 `python mapper.py mydatapack myotherdatapack`
@@ -11,11 +11,11 @@ This script will generate a graph jpeg where each node is a function file and ea
 
 *your setup may require python3 instead of python*
 
-# Motivation
+## Motivation
 
 The purpose of this project was to understand medium to large datapacks and see where the components lie and how the different systems connect. The purpose is to also spot potential optimizations in rather large datapacks by enabling labeling.
 
-# Installation
+## Installation
 
 ## Dependencies
 This script relies on a dependancy called graphviz[https://www.graphviz.org/] and the python hooks, pygraphviz.
@@ -29,7 +29,7 @@ Before using the script, install pygraphviz[https://pypi.org/project/pygraphviz/
 ## Script
 After setting up the dependencies, just download the mapper.py script and place it outside your datapacks (you can place it in your mc datapack folders if you like, just not inside them)
 
-# Usage
+## Usage
 This script comes with minor tweaking options but the main usage is as follows:
 `python mapper.py <datapack> [anotherdatapack ...]`
 
@@ -41,7 +41,7 @@ Running: `python mapper.py -h` will pull up a help menu describing the other opt
 `-l --label` will enabling labeling. This includes what you called each function with on the line connecting nodes
 `-o --outfile OUTFILE` will allow you to name your own output file. for `multiple` mode, this is ignored
 
-# Tests
+## Tests
 
 Maybe in the future, hehe
 
