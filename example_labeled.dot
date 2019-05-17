@@ -1,0 +1,236 @@
+digraph "" {
+	graph [bb="0,0,1230.7,1238.6",
+		bgcolor="#262626",
+		overlap=scale,
+		splines=True
+	];
+	node [color=white,
+		fontcolor="#bfbfbf",
+		label="\N"
+	];
+	"lobby:gui/tick"	 [height=0.5,
+		pos="192.32,745.48",
+		width=1.6591];
+	"lobby:gui/inventory"	 [height=0.5,
+		pos="437.63,600.99",
+		width=2.2322];
+	"lobby:gui/tick" -> "lobby:gui/inventory"	 [color="#91a4f6",
+		fontcolor="#91a4f6",
+		label="as @a at @s ",
+		lp="278.01,680.45",
+		pos="e,408.93,617.89 219.99,729.19 264.1,703.2 350.47,652.33 400.11,623.09"];
+	"lobby:gui/detect"	 [height=0.5,
+		pos="593.2,834.6",
+		width=1.8771];
+	"lobby:gui/inventory" -> "lobby:gui/detect"	 [color="#cca2d5",
+		fontcolor="#cca2d5",
+		label="if score @s gui.slots < @s gui.prev_slots ",
+		lp="398.93,724.95",
+		pos="e,581.21,816.6 449.58,618.93 476.78,659.78 543.45,759.9 575.47,807.98"];
+	"lobby:gui/pages/home"	 [height=0.5,
+		pos="254.33,458.58",
+		width=2.464];
+	"lobby:gui/inventory" -> "lobby:gui/pages/home"	 [color="#82d7fa",
+		fontcolor="#82d7fa",
+		label="if score @s gui.page matches 1 ",
+		lp="256.88,536.75",
+		pos="e,276.99,476.19 415.16,583.53 382.45,558.12 321.64,510.88 284.89,482.33"];
+	"lobby:gui/pages/games"	 [height=0.5,
+		pos="496.82,311.82",
+		width=2.5458];
+	"lobby:gui/inventory" -> "lobby:gui/pages/games"	 [color="#c0cabc",
+		fontcolor="#c0cabc",
+		label="if score @s gui.page matches 2 ",
+		lp="470.26,449.96",
+		pos="e,494.26,329.94 441.93,582.93 451.04,544.31 472.66,450.77 487.43,371.68 489.37,361.32 491.23,349.9 492.77,339.84"];
+	"lobby:gui/pages/description"	 [height=0.5,
+		pos="155.52,505.71",
+		width=3.0098];
+	"lobby:gui/inventory" -> "lobby:gui/pages/description"	 [color="#b39fe2",
+		fontcolor="#b39fe2",
+		label="if score @s gui.page matches 3 ",
+		lp="209.07,560.87",
+		pos="e,203.79,522.01 392.93,585.89 344.37,569.49 266.63,543.23 213.43,525.27"];
+	"lobby:gui/pages/staff"	 [height=0.5,
+		pos="401.22,371.59",
+		width=2.3504];
+	"lobby:gui/inventory" -> "lobby:gui/pages/staff"	 [color="#e0f488",
+		fontcolor="#e0f488",
+		label="if score @s gui.page matches 4 ",
+		lp="508.54,493.64",
+		pos="e,404.11,389.83 434.77,582.99 428.46,543.22 413.29,447.62 405.7,399.81"];
+	"lobby:gui/pages/home_btn"	 [height=0.5,
+		pos="683.6,458.83",
+		width=2.9008];
+	"lobby:gui/inventory" -> "lobby:gui/pages/home_btn"	 [color="#f185b2",
+		fontcolor="#f185b2",
+		label="if score @s gui.page matches 2.. ",
+		lp="467.93,536.98",
+		pos="e,653.69,476.12 466.81,584.12 511.14,558.5 595.49,509.76 644.89,481.21"];
+	"lobby:gui/items/home_btn"	 [height=0.5,
+		pos="418.17,1047.1",
+		width=2.8736];
+	"lobby:gui/detect" -> "lobby:gui/items/home_btn"	 [color="#b6acdc",
+		fontcolor="#b6acdc",
+		label="if score @s gui.page matches 2.. ",
+		lp="413.04,947.94",
+		pos="e,432.88,1029.2 578.58,852.35 547.62,889.92 475.38,977.62 439.37,1021.3"];
+	"lobby:gui/items/home"	 [height=0.5,
+		pos="828.78,943.9",
+		width=2.4369];
+	"lobby:gui/detect" -> "lobby:gui/items/home"	 [color="#a0c2f4",
+		fontcolor="#a0c2f4",
+		label="if score @s[scores={gui.clicked=0}] gui.page matches 1 ",
+		lp="549.6,895.72",
+		pos="e,793.16,927.38 626.95,850.26 668.25,869.42 738.32,901.93 784.07,923.16"];
+	"lobby:gui/items/games"	 [height=0.5,
+		pos="854.6,719.2",
+		width=2.5187];
+	"lobby:gui/detect" -> "lobby:gui/items/games"	 [color="#c4f69c",
+		fontcolor="#c4f69c",
+		label="if score @s[scores={gui.clicked=0}] gui.page matches 2 ",
+		lp="562.45,784.43",
+		pos="e,817.29,735.67 628.18,819.16 674.54,798.69 756.48,762.52 808.03,739.75"];
+	"lobby:gui/items/description"	 [height=0.5,
+		pos="487.65,1130.8",
+		width=2.9827];
+	"lobby:gui/detect" -> "lobby:gui/items/description"	 [color="#ebcfa1",
+		fontcolor="#ebcfa1",
+		label="if score @s[scores={gui.clicked=0}] gui.page matches 3 ",
+		lp="367.79,1011.4",
+		pos="e,497.15,1112.7 584.36,852.94 570.04,883.55 541.94,947.31 528.03,1004.4 523.49,1022.9 528.09,1028.6 523.22,1047.1 518.11,1066.6 \
+509.26,1087.4 501.67,1103.4"];
+	"lobby:gui/items/staff"	 [height=0.5,
+		pos="793.68,1041.9",
+		width=2.3233];
+	"lobby:gui/detect" -> "lobby:gui/items/staff"	 [color="#c6fae8",
+		fontcolor="#c6fae8",
+		label="if score @s[scores={gui.clicked=0}] gui.page matches 4 ",
+		lp="532.91,930.93",
+		pos="e,776.63,1024.2 610.29,852.27 645.95,889.14 728.36,974.33 769.46,1016.8"];
+	"lobby:gui/clear"	 [height=0.5,
+		pos="593.27,1004.5",
+		width=1.7679];
+	"lobby:gui/detect" -> "lobby:gui/clear"	 [color="#c78f9a",
+		fontcolor="#c78f9a",
+		label=" ",
+		lp="591.48,912.53",
+		pos="e,593.26,986.47 593.2,852.79 593.22,882.42 593.24,941.35 593.26,976.41"];
+	"gui:clear"	 [height=0.5,
+		pos="226.75,236.31",
+		width=1.14];
+	"lobby:gui/pages/home" -> "gui:clear"	 [color="#baa0a8",
+		fontcolor="#baa0a8",
+		label="if score @s gui.temp matches 4.. ",
+		lp="147.19,354.37",
+		pos="e,229,254.44 252.07,440.39 247.26,401.63 235.97,310.65 230.23,264.39"];
+	"lobby:gui/pages/games" -> "gui:clear"	 [color="#e1f6c8",
+		fontcolor="#e1f6c8",
+		label="if score @s gui.temp matches 2.. ",
+		lp="259.72,278.63",
+		pos="e,261.73,246.09 444.1,297.08 393.8,283.02 318.85,262.06 271.41,248.8"];
+	"lobby:gui/pages/description" -> "gui:clear"	 [color="#a5d0c0",
+		fontcolor="#a5d0c0",
+		label="if score @s gui.temp matches 5.. ",
+		lp="93.341,377.15",
+		pos="e,221.03,254.29 158.34,487.67 159.83,478.82 161.81,468.03 164.02,458.44 180.33,387.7 204.97,305.85 217.98,264.03"];
+	"lobby:gui/pages/staff" -> "gui:clear"	 [color="#a3ab9c",
+		fontcolor="#a3ab9c",
+		label="if score @s gui.temp matches 7.. ",
+		lp="219.64,310.17",
+		pos="e,247.22,252.18 378.77,354.18 347.29,329.78 290.03,285.38 255.48,258.59"];
+	"lobby:gui/click_sound"	 [height=0.5,
+		pos="682.44,1220.6",
+		width=2.4778];
+	"lobby:gui/items/home_btn" -> "lobby:gui/click_sound"	 [color="#d0afaf",
+		fontcolor="#d0afaf",
+		label="if entity @s[tag=gui.click] ",
+		lp="672.73,1137.9",
+		pos="e,668.56,1202.5 464.31,1063.3 501.91,1077.8 555.35,1101.2 596.63,1130.9 621.89,1149.1 645.95,1175.3 662.13,1194.7"];
+	"lobby:gui/items/home" -> "lobby:gui/click_sound"	 [color="#97bccb",
+		fontcolor="#97bccb",
+		label="if entity @s[scores={gui.clicked=1}] ",
+		lp="773.82,1070",
+		pos="e,656.7,1203.2 755.23,953.73 731.31,968.34 691.21,1010 680.56,1030.7 664.53,1061.8 642.29,1149.3 653.47,1193.7"];
+	"lobby:gui/items/home" -> "lobby:gui/click_sound"	 [color="#bca0fc",
+		fontcolor="#bca0fc",
+		label="if entity @s[scores={gui.clicked=1}] ",
+		lp="592.55,1079.5",
+		pos="e,682.32,1202.5 767.32,956.77 766.43,957.11 765.76,957.42 765.34,957.7 746.67,970.34 716.76,1020.8 708.44,1041.7 688.43,1092.2 683.58,\
+1156.1 682.53,1192.3"];
+	"lobby:gui/items/home" -> "lobby:gui/click_sound"	 [color="#c0ea82",
+		fontcolor="#c0ea82",
+		label="if entity @s[scores={gui.clicked=1}] ",
+		lp="630.75,1060.5",
+		pos="e,668.73,1202.7 761.01,955.44 740,968.95 704.07,1015.3 694.5,1036.2 680.38,1067 662.64,1149.4 667.1,1192.6"];
+	"lobby:gui/items/description" -> "lobby:gui/click_sound"	 [color="#96aeda",
+		fontcolor="#96aeda",
+		label="unless data entity @s[scores={gui.clicked=0}] {Inventory:[{tag:{gui.ctf:1b}}]} ",
+		lp="337.08,1187.1",
+		pos="e,623.44,1206.8 505.19,1148.6 529.62,1164.7 575,1187 613.75,1202.9"];
+	"lobby:gui/items/description" -> "lobby:gui/click_sound"	 [color="#fae690",
+		fontcolor="#fae690",
+		label="unless data entity @s[scores={gui.clicked=0}] {Inventory:[{tag:{gui.ffa:1b}}]} ",
+		lp="382.28,1164.7",
+		pos="e,664.72,1202.7 549.44,1145.6 585.41,1160 628.86,1180.8 656.13,1197.3"];
+	"lobby:gui/items/description" -> "lobby:gui/click_sound"	 [color="#f4d888",
+		fontcolor="#f4d888",
+		label="unless data entity @s[scores={gui.clicked=0}] {Inventory:[{tag:{gui.staff:1b}}]} ",
+		lp="815.9,1182.8",
+		pos="e,646.47,1204 524.75,1147.9 556.74,1162.6 603.02,1184 637.18,1199.7"];
+	"lobby:gui/items/staff" -> "lobby:gui/click_sound"	 [color="#d290ba",
+		fontcolor="#d290ba",
+		label="unless data entity @s[scores={gui.clicked=0}] {Inventory:[{tag:{gui.tall:1b}}]} ",
+		lp="937.2,1118.5",
+		pos="e,677.51,1202.4 759.78,1058.4 728.43,1089.7 689.2,1154.4 679.45,1192.4"];
+	"lobby:gui/items/staff" -> "lobby:gui/click_sound"	 [color="#e3a2c3",
+		fontcolor="#e3a2c3",
+		label="unless data entity @s[scores={gui.clicked=0}] {Inventory:[{tag:{gui.1ime:1b}}]} ",
+		lp="998.39,1144.1",
+		pos="e,716.55,1203.8 798.61,1060.1 794.64,1093.2 756.41,1159.9 723.48,1196.5"];
+	"lobby:gui/items/staff" -> "lobby:gui/click_sound"	 [color="#a8e0ce",
+		fontcolor="#a8e0ce",
+		label="unless data entity @s[scores={gui.clicked=0}] {Inventory:[{tag:{gui.shraav:1b}}]} ",
+		lp="988.69,1127.2",
+		pos="e,704.32,1203.1 791.48,1060 779.33,1092 739.34,1158.1 710.91,1194.8"];
+	"lobby:gui/items/staff" -> "lobby:gui/click_sound"	 [color="#c0ddfc",
+		fontcolor="#c0ddfc",
+		label="unless data entity @s[scores={gui.clicked=0}] {Inventory:[{tag:{gui.power:1b}}]} ",
+		lp="502.09,1138.5",
+		pos="e,693.59,1202.7 782.4,1060 762.7,1091.6 721.92,1157.2 699,1194"];
+	"lobby:gui/items/staff" -> "lobby:gui/click_sound"	 [color="#aa8af6",
+		fontcolor="#aa8af6",
+		label="unless data entity @s[scores={gui.clicked=0}] {Inventory:[{tag:{gui.wolfie:1b}}]} ",
+		lp="488.15,1121.4",
+		pos="e,684.63,1202.5 771.66,1059.6 745.53,1091 705.05,1156.1 688.47,1193.3"];
+	"lobby:gui/load"	 [height=0.5,
+		pos="121.83,18",
+		width=1.7136];
+	"lobby:gui/load" -> "gui:clear"	 [color="#adacbb",
+		fontcolor="#adacbb",
+		label="as @a ",
+		lp="155.47,134.29",
+		pos="e,218.19,218.5 130.41,35.865 148.79,74.098 192.02,164.04 213.77,209.3"];
+	"#minecraft:tick"	 [color="#d49ee4",
+		fontcolor="#d49ee4",
+		height=0.5,
+		pos="714.3,637.32",
+		width=1.7813];
+	"gui:tick"	 [height=0.5,
+		pos="823.55,621",
+		width=1.0313];
+	"#minecraft:tick" -> "gui:tick"	 [color="#f690d4",
+		fontcolor="#f690d4",
+		pos="e,787.93,626.32 771.16,628.83 773.39,628.49 775.61,628.16 777.82,627.83"];
+	"#minecraft:load"	 [color="#fea4b2",
+		fontcolor="#fea4b2",
+		height=0.5,
+		pos="783.26,369.91",
+		width=1.8359];
+	"gui:load"	 [height=0.5,
+		pos="896.44,353",
+		width=1.0858];
+	"#minecraft:load" -> "gui:load"	 [color="#bafddc",
+		fontcolor="#bafddc",
+		pos="e,859.05,358.59 841.51,361.21 844.02,360.83 846.53,360.46 849.02,360.09"];
+}
