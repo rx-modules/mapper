@@ -54,7 +54,7 @@ Running: `python mapper.py -h` will pull up a help menu describing the other opt
 
 Maybe in the future, hehe
 
-# Notes
+## Notes
 
 This script is pretty fragile so only feed it valid datapacks. It also doesn't handle zip files yet, so watch the page if you are interested in that.
 
