@@ -1,10 +1,12 @@
 from base64 import b16encode
-from pathlib import Path
 from itertools import chain
+from pathlib import Path
+
 import pygraphviz as pgv
 import random
 import json
 import time
+import sys
 import re
 
 fcount = 0
@@ -31,10 +33,10 @@ def gen_open(paths):
         fcount += 1
         yield path.open()
 
+
 def convert(fname, num=4):
     parts = Path(fname).parts  # 0:1 - datapack/data, 3 - functions
-    return parts[2] + ':' + '/'.join(re.sub(r'(\.mcfunction)|(\.json)', '', part) for part in parts[num:])
-
+    return parts[2] + ':' + '/'.join(re.sub(r'(\.mcfunction)|(\.json)', '', part) for part in parts[num:])  # noqa
 
 
 def gen_lines(files):
@@ -50,11 +52,6 @@ def gen_grep(pat, tups):
             yield name, line.replace(' run', '').replace('execute ', '').strip()  # noqa
 
 
-def find_namespace(s):
-    pass
-
-
-
 def gen_do(pat, tup):
     for name, line in tup:
         match = pat.search(line)
@@ -68,19 +65,39 @@ def gen_do(pat, tup):
         yield name, (func, label)
 
 
-def gen_json(paths):
+def gen_tag(paths):
     for path in paths:
-        namespaced = '#' + convert(path, 5)  # path.__repl__() -> str
+        namespaced = '#' + convert(path)  # path.__repl__() -> str
         jfile = json.load(path.open())
-        yield ((namespaced, (val, '')) for val in jfile['values'])
+        for val in jfile['values']:
+            yield (namespaced, (val, ''))
+
+
+def gen_adv(paths):
+    for path in paths:
+        namespaced = str(path)
+        jfile = json.load(path.open())
+        print(path, jfile)
+        if 'rewards' in jfile:
+            yield (namespaced, (jfile['rewards']['function'], ''))
 
 
 def main():
     fecount = 0
+
+    exits = ['quit', 'q', 'exit', 'exit()', 'stop', 'leave']
     pat = re.compile(r'^((?!^#.+).)*$')
     patf = re.compile(r'((schedule )?function(?![^{]*})) (#?[a-z0-9.-_+:]+)( \d+.)?')  # noqa
 
     dir_name = str(input('Datapack name: '))
+    if dir_name.lower().strip() in exits:
+        print('Stopping..')
+        sys.exit()
+    elif not Path(dir_name).exists():
+        print('Directory does not exist..')
+        print('Stopping..')
+        sys.exit()
+
     start_time = time.time()
 
     funcfames = Path(f'./{dir_name}/data').rglob('*.mcfunction')
@@ -91,10 +108,12 @@ def main():
     functions = gen_do(patf, funcfuncs)
 
     jsonfames = Path(f'./{dir_name}/data').rglob('*/tags/functions/*.json')
-    functagss = gen_json(jsonfames)
-    finaltags = chain.from_iterable(functagss)
+    functagss = gen_tag(jsonfames)
 
-    gen_funcs = chain(functions, finaltags)  # Final stop
+    advjnames = Path(f'./{dir_name}/data').rglob('*/advancements/**/*.json')
+    advnamess = gen_adv(advjnames)
+
+    gen_funcs = chain(functions, functagss, advnamess)  # Final stop
 
     G = pgv.AGraph(splines=True,
                    overlap=False,
