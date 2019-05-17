@@ -15,9 +15,8 @@ This script will generate a graph jpeg where each node is a function file and ea
 
 The purpose of this project was to understand medium to large datapacks and see where the components lie and how the different systems connect. The purpose is to also spot potential optimizations in rather large datapacks by enabling labeling.
 
-## Installation
-
 ## Dependencies
+
 This script relies on a dependancy called graphviz[https://www.graphviz.org/] and the python hooks, pygraphviz.
 graphviz is a C++ library so it requires the C++ tools to be able to run it (Mac: XCode, Win: Microsoft C++ Distributables)
 
@@ -27,9 +26,11 @@ Before using the script, install pygraphviz[https://pypi.org/project/pygraphviz/
 *again pip3 might be necessary*
 
 ## Script
+
 After setting up the dependencies, just download the mapper.py script and place it outside your datapacks (you can place it in your mc datapack folders if you like, just not inside them)
 
 ## Usage
+
 This script comes with minor tweaking options but the main usage is as follows:
 `python mapper.py <datapack> [anotherdatapack ...]`
 
@@ -46,6 +47,7 @@ Running: `python mapper.py -h` will pull up a help menu describing the other opt
 Maybe in the future, hehe
 
 # Notes
+
 This script is pretty fragile so only feed it valid datapacks. It also doesn't handle zip files yet, so watch the page if you are interested in that.
 
 I have some more things planned, but for now, it's just this.
