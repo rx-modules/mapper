@@ -147,14 +147,13 @@ def build_graph(G, gen, lab, datapack):
     for func in gen:
         fecount += 1
         name, call, label = func
+        color = gen_pastel_color()
         if name.startswith('#') or '.json' in name:  # if tag or adv
-            color = gen_pastel_color()
             G.add_node(name.strip(), color=color, fontcolor=color)
         else:
             G.add_node(name.strip())
 
         if call != '':
-            color = gen_pastel_color()
             if lab:
                 G.add_edge(name, call.strip(),
                            color=color, fontcolor=color, label=label)
