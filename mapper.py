@@ -223,7 +223,7 @@ def main(datapacks, mode='one', label=False, outfile=None):
     else:
         print('Invalid Mode')
         print('Please notify the repo maintainers if you see this')
-        print('Stopping..')
+        input('Press enter to quit')
         sys.exit()
 
     print(f'Done in {round(abs(start - time.time()), 3)}s!')
@@ -243,7 +243,7 @@ if __name__ == '__main__':
 
     for arg in args.datapack:
         if not Path(arg).exists():
-            print('Directory does not exist. Stopping..')
+            input('Directory does not exist. Press enter to quit')
             sys.exit()
 
     main(args.datapack, args.mode, args.label, args.outfile)
