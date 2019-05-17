@@ -4,10 +4,10 @@ This script will generate a graph jpeg where each node is a function file and ea
 
 ## Code Example
 
-`python mapper.py mydatapack`
-`python mapper.py mydatapack myotherdatapack`
-`python mapper.py mydatapack -o output`
-`python mapper.py mydatapack --label`
+* `python mapper.py mydatapack`
+* `python mapper.py mydatapack myotherdatapack`
+* `python mapper.py mydatapack -o output`
+* `python mapper.py mydatapack --label`
 
 *your setup may require python3 instead of python*
 
@@ -35,12 +35,12 @@ This script comes with minor tweaking options but the main usage is as follows:
 `python mapper.py <datapack> [anotherdatapack ...]`
 
 Running: `python mapper.py -h` will pull up a help menu describing the other options
-`datapack [datapack2 datapack 3 ...]` include datapack(s) for the tool to be used on
-`-m --mode MODE` will set the mode:
-  default is `one` where all the datapacks will output to one graph
-  `multiple` is where the datapacks output to their own graphs
-`-l --label` will enabling labeling. This includes what you called each function with on the line connecting nodes
-`-o --outfile OUTFILE` will allow you to name your own output file. for `multiple` mode, this is ignored
+* `datapack [datapack2 datapack 3 ...]` include datapack(s) for the tool to be used on
+* `-m --mode MODE` will set the mode:
+  ** default is `one` where all the datapacks will output to one graph
+  ** `multiple` is where the datapacks output to their own graphs
+* `-l --label` will enabling labeling. This includes what you called each function with on the line connecting nodes
+* `-o --outfile OUTFILE` will allow you to name your own output file. for `multiple` mode, this is ignored
 
 ## Tests
 
