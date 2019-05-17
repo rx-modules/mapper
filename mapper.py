@@ -115,37 +115,45 @@ def stream_nodes(datapack):
     return chain(functions, functags, advnames)
 
 
-def build_graph(G, gen, label):
+def build_graph(G, gen, label, datapack):
     fecount = 0
 
     for func in gen:
         fecount += 1
         name, call = func
-        G.add_node(name.strip())
+        if name.startswith('#') or '.json' in name:  # if tag or adv
+            color = gen_pastel_color()
+            G.add_node(name.strip(), color=color, fontcolor=color)
+        else:
+            G.add_node(name.strip())
         called = call[0]
         if called != '':
             color = gen_pastel_color()
             if label:
                 G.add_edge(name, called.strip(),
-                           color=color, font_color=color, label=call[1]
+                           color=color, fontcolor=color, label=call[1]
                 )
             else:
                 G.add_edge(name, called.strip(),
                            color=color
                 )
-    print(f'  Built with: {fcount} functions and {fecount} connections ({G.order()} nodes)!')  # noqa
+
+    print(f'  {datapack} built with: {fcount} functions and {fecount} connections ({G.order()} nodes)!')  # noqa
 
 
-def output_graph(dir_name, G):
-    print(f'Constructing the {dir_name} graph. Warning: This might take a while')  # noqa
+def output_graph(dir_name, G, outfile):
+    if outfile is None:
+        outfile = dir_name
+    print(f'Constructing the {outfile} graph. Warning: This might take a while')  # noqa
     print('  Laying graph out')
     G.layout()
-    print(f'  Writing to {dir_name}.dot')
-    G.write(f'{dir_name}.dot')
-    print(f'  Drawing to {dir_name}.jpeg')
-    G.draw(f'{dir_name}.jpeg', format='jpeg', prog='sfdp')
+    print(f'  Writing to {outfile}.dot')
+    G.write(f'{outfile}.dot')
+    print(f'  Drawing to {outfile}.jpeg')
+    G.draw(f'{outfile}.jpeg', format='jpeg', prog='sfdp')
 
-def main(datapacks, mode='one', label=False):
+def main(datapacks, mode='one', label=False, outfile=None):
+    global fcount
     start = time.time()
     
     if label:
@@ -164,9 +172,10 @@ def main(datapacks, mode='one', label=False):
         print('Reading in the datapacks and building the graph')
         for datapack in datapacks:
             nodes = stream_nodes(datapack)
-            build_graph(G, nodes, label)
+            build_graph(G, nodes, label, datapack)
+            fcount = 0
 
-        output_graph(datapack, G)
+        output_graph(datapacks[0], G, outfile)
     elif mode == 'multiple':
         for datapack in datapacks:
             G = pgv.AGraph(splines=True,
@@ -179,7 +188,8 @@ def main(datapacks, mode='one', label=False):
             print('Reading in the datapack and building the graph')
             nodes = stream_nodes(datapack)
             build_graph(G, nodes, label)
-            output_graph(datapack, G)
+            output_graph(datapack, G, outfile)
+            fcount = 0
     else:
         print('Invalid Mode')
 
@@ -191,10 +201,12 @@ if __name__ == '__main__':
     parser = ArgumentParser(description='minecraft datapack mapper using graphviz')  # noqa
     parser.add_argument('datapack', metavar='d', type=str, nargs='+',
                         help='a valid datapack to map')
-    parser.add_argument('--mode', type=str, default='one',
+    parser.add_argument('-m', '--mode', type=str, default='one',
                         help='output all datapacks to [multiple] or [one] graph')  # noqa
-    parser.add_argument('--label', default=False, action='store_true', # noqa
+    parser.add_argument('-l', '--label', default=False, action='store_true', # noqa
                         help='enable edge labeling (warning, takes longer and bigger output size)')  # noqa
+    parser.add_argument('-o', '--outfile', type=str, # noqa
+                        help='define what file you would like to save the output to. default: datapack.jpeg/out')  # noqa
     args = parser.parse_args()
 
     for arg in args.datapack:
@@ -202,4 +214,4 @@ if __name__ == '__main__':
             print('Directory does not exist. Stopping..')
             sys.exit()
 
-    main(args.datapack, args.mode, args.label)
+    main(args.datapack, args.mode, args.label, args.outfile)
