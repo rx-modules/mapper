@@ -182,7 +182,7 @@ def main(datapacks, mode='one', label=False, outfile=None):
     start = time.time()
 
     # labeling doesn't work properly on smart overlap (=False)
-    # on scale, the output picture get's pretty big, but looks neater
+    # on ='scale', the output picture gets pretty big, but looks neater
     if label:
         overlap = 'scale'
     else:
@@ -191,7 +191,7 @@ def main(datapacks, mode='one', label=False, outfile=None):
     # mode: one, loop each datapack on building then output
     # mode: multiple, loop each datapack and output each one
     if mode == 'one':
-        G = pgv.AGraph(splines=True,
+        G = gpv.AGraph(splines=True,
                        overlap=overlap,
                        strict=False,
                        directed=True,
