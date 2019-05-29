@@ -4,6 +4,7 @@ from itertools import chain
 from pathlib import Path
 
 import pygraphviz as pgv
+import zipfile
 import random
 import json
 import time
@@ -164,10 +165,8 @@ def build_graph(G, gen, lab, datapack):
     print(f'  {datapack} built with: {fcount} functions and {fecount} connections ({G.order()} nodes)!')  # noqa
 
 
-def output_graph(dir_name, G, outfile):
+def output_graph(outfile, G):
     """ displays the graph to jpeg (and .dot) """
-    if outfile is None:
-        outfile = dir_name  # dir_name can be our outfile
     print(f'Constructing the {outfile} graph. Warning: This might take a while')  # noqa
     print('  Laying graph out')
     G.layout()  # lays out the graph. not neccissary, but helps with final product # noqa
@@ -191,7 +190,7 @@ def main(datapacks, mode='one', label=False, outfile=None):
     # mode: one, loop each datapack on building then output
     # mode: multiple, loop each datapack and output each one
     if mode == 'one':
-        G = gpv.AGraph(splines=True,
+        G = pgv.AGraph(splines=True,
                        overlap=overlap,
                        strict=False,
                        directed=True,
@@ -204,7 +203,10 @@ def main(datapacks, mode='one', label=False, outfile=None):
             build_graph(G, nodes, label, datapack)
             fcount = 0
 
-        output_graph(datapacks[0], G, outfile)
+        if outfile is None:
+            output_graph(datapacks[0], G)
+        else:
+            output_graph(outfile, G)
     elif mode == 'multiple':
         for datapack in datapacks:
             # strict=False and directed=True allows self-loops
@@ -243,7 +245,14 @@ if __name__ == '__main__':
 
     for arg in args.datapack:
         if not Path(arg).exists():
-            input('Directory does not exist. Press enter to quit')
-            sys.exit()
+            if not Path(arg + '.zip').exists():
+                input('Directory does not exist. Press enter to quit')
+                sys.exit()
+            else:
+                print(f'{arg}.zip exists.')
+                with zipfile.ZipFile(arg + '.zip') as zip_ref:
+                    zip_ref.extractall(arg)
+        else:
+            print(f'{arg} directory exists. This will be used over a zip file if it exists.')  # noqa
 
     main(args.datapack, args.mode, args.label, args.outfile)
