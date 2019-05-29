@@ -6,10 +6,12 @@ from pathlib import Path
 import pygraphviz as pgv
 import zipfile
 import random
+import shutil
 import json
 import time
 import sys
 import re
+
 
 fcount = 0
 
@@ -42,7 +44,8 @@ def trace(source, lead=None):
 def convert(fname, num=4):
     """ converts file path to mc namespaced path """
     parts = Path(fname).parts  # 0:1 - datapack/data, 3 - functions
-    return parts[2] + ':' + '/'.join(re.sub(r'(\.mcfunction)|(\.json)', '', part) for part in parts[num:])  # noqa
+    data_index = parts.index('data')
+    return parts[data_index + 1] + ':' + '/'.join(re.sub(r'(\.mcfunction)|(\.json)', '', part) for part in parts[(data_index - 1) + num:])  # noqa
 
 
 def gen_open(paths):
@@ -101,19 +104,21 @@ def gen_adv(paths):
     for path in paths:
         jfile = json.load(path.open())
         if 'rewards' in jfile:  # rewards has the function output
-            yield str(path), jfile['rewards']['function'], ''
+            parts = Path(path).parts
+            data_index = parts.index('data')
+            yield '/'.join(parts[data_index + 1:]), jfile['rewards']['function'], ''  # noqa
 
 
 def get_paths(dir_name, glob):
     """ returns a generator of the recursive paths on input glob """
-    return Path(f'./{dir_name}/data').rglob(glob)
+    return Path(f'./{dir_name}').rglob(glob)
 
 
 def get_functions(dir_name):
     """ packaged generators that handle functions """
     pat = re.compile(r'^((?!^#.+).)*$')
     patf = re.compile(r'((schedule )?function(?![^{]*})) (#?[a-z0-9.-_+:]+)( \d+.)?')  # noqa
-    funcnames = get_paths(dir_name, '*/functions/**/*.mcfunction')
+    funcnames = get_paths(dir_name, '**/data/*/functions/**/*.mcfunction')
     funcfiles = gen_open(funcnames)
     functuple = gen_lines(funcfiles)
     funclines = gen_grep(patf, functuple)
@@ -123,13 +128,13 @@ def get_functions(dir_name):
 
 def get_tags(dir_name):
     """ packaged generators that handle function tags """
-    jsonnames = get_paths(dir_name, '*/tags/functions/*.json')
+    jsonnames = get_paths(dir_name, '**/data/*/tags/functions/*.json')
     return gen_tag(jsonnames)
 
 
 def get_adv(dir_name):
     """ packaged generators that handle advancements """
-    advjnames = get_paths(dir_name, '*/advancements/**/*.json')
+    advjnames = get_paths(dir_name, '**/data/*/advancements/**/*.json')
     return gen_adv(advjnames)
 
 
@@ -231,6 +236,13 @@ def main(datapacks, mode='one', label=False, outfile=None):
     print(f'Done in {round(abs(start - time.time()), 3)}s!')
 
 
+def delete_folder(fldr):
+    try:
+        shutil.rmtree(fldr)
+    except OSError as e:
+        print(f"Error: {e.filename} - {e.strerror}.")
+
+
 if __name__ == '__main__':
     parser = ArgumentParser(description='minecraft datapack mapper using graphviz')  # noqa
     parser.add_argument('datapack', metavar='d', type=str, nargs='+',
@@ -243,16 +255,29 @@ if __name__ == '__main__':
                         help='define what file you would like to save the output to. default: datapack.jpeg/out')  # noqa
     args = parser.parse_args()
 
+    # Below is horrifying, but it works :P
+    unzipped = []  # clean up later
     for arg in args.datapack:
         if not Path(arg).exists():
             if not Path(arg + '.zip').exists():
+                for datapack in unzipped:  # clean up early :(
+                    if Path(arg).exists():
+                        delete_folder(datapack)
+
                 input('Directory does not exist. Press enter to quit')
                 sys.exit()
             else:
                 print(f'{arg}.zip exists.')
                 with zipfile.ZipFile(arg + '.zip') as zip_ref:
                     zip_ref.extractall(arg)
+                unzipped.append(arg)
         else:
             print(f'{arg} directory exists. This will be used over a zip file if it exists.')  # noqa
 
+        if Path(arg + '/__MACOSX').exists():
+            delete_folder(arg + '/__MACOSX')
+
     main(args.datapack, args.mode, args.label, args.outfile)
+
+    for datapack in unzipped:
+        delete_folder(datapack)
