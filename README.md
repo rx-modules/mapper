@@ -28,8 +28,9 @@ The purpose of this project was to understand medium to large datapacks and see 
 This script relies on a dependancy called [graphviz](https://www.graphviz.org/) and the python hooks, pygraphviz.
 graphviz is a C++ library so it requires the C++ tools to be able to run it (Mac: XCode, Win: Microsoft C++ Distributables)
 
-Before using the script, install [pygraphviz](https://pypi.org/project/pygraphviz/):
-`pip install pygraphviz` - this should handle all of it
+First, grab graphviz for your OS [here](https://graphviz.gitlab.io/download/)
+Then install [pygraphviz](https://pypi.org/project/pygraphviz/):
+`pip install pygraphviz`
 
 *again pip3 might be necessary*
 
